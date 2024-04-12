@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Device Details</title>
+</head>
+<body>
+<h1>Device Details</h1>
+
+<div id="device-info"></div>
+
+<script>
+// Function to populate the device details
+const populateDeviceInfo = (device) => {
+const deviceInfo = document.getElementById('device-info');
+
+const deviceName = document.createElement('h2');
+const deviceType = document.createElement('p');
+const deviceStatus = document.createElement('p');
+const deviceActions = document.createElement('div');
+
+deviceName.innerText = device.name;
+deviceType.innerText = `Type: ${device.type}`;
+deviceStatus.innerText = `Status: ${device.status}`;
+
+// Add action buttons based on device capabilities
+device.capabilities.forEach((capability) => {
+const actionButton = document.createElement('button');
+
+actionButton.innerText = capability.action;
+actionButton.addEventListener('click', () => {
+// Send a request to the server to perform the action
+fetch(`/device/${device.id}/${capability.action}`, {
+method: 'POST',
+})
+.then((response) => response.json())
+.then((data) => {
+if (data.success) {
+// Update the device status
+deviceStatus.innerText = `Status: ${data.status}`;
+}
+})
+.catch((error) => console.error(error));
+});
+
+deviceActions.appendChild(actionButton);
+});
+
+deviceInfo.appendChild(deviceName);
+deviceInfo.appendChild(deviceType);
+deviceInfo.appendChild(deviceStatus);
+deviceInfo.appendChild(deviceActions);
+};
+
+// Fetch the device details from the server
+fetch(`/device/${window.location.pathname.split('/')[2]}`)
+.then((response) => response.json())
+.then((data) => populateDeviceInfo(data))
+.catch((error) => console.error(error));
+</script>
+</body>
+</html>
+
