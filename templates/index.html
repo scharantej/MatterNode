@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Smart Home App</title>
+</head>
+<body>
+<h1>Connected Devices</h1>
+<ul id="devices"></ul>
+
+<script>
+// Function to populate the list of devices
+const populateDevices = (devices) => {
+const deviceList = document.getElementById('devices');
+
+devices.forEach((device) => {
+const listItem = document.createElement('li');
+const deviceName = document.createElement('span');
+const deviceDetailsLink = document.createElement('a');
+
+deviceDetailsLink.setAttribute('href', `/device/${device.id}`);
+deviceDetailsLink.innerText = device.name;
+
+deviceName.appendChild(deviceDetailsLink);
+listItem.appendChild(deviceName);
+deviceList.appendChild(listItem);
+});
+};
+
+// Fetch the list of devices from the server
+fetch('/devices')
+.then((response) => response.json())
+.then((data) => populateDevices(data))
+.catch((error) => console.error(error));
+</script>
+</body>
+</html>
+
